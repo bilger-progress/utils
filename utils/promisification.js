@@ -1,22 +1,21 @@
-function usesCallback(arguments, callback) {
+function usesCallback(callback) {
     return setTimeout(() => {
-        return callback(null, arguments);
-        // return callback(new Error("Error"), null);
+        return callback(null, 1, 2, 3);
     }, 1000);
 }
 
-usesCallback(1, (error, data) => {
+usesCallback((error, ...data) => {
     if (error) {
         console.error(error);
         return;
     }
-    console.log(data);
+    console.log(...data);
 });
 
 function promisify(func) {
-    return (arguments) => {
+    return (...arguments) => {
         return new Promise((resolve, reject) => {
-            return func(arguments, (error, data) => {
+            return func(...arguments, (error, data) => {
                 if (error) {
                     return reject(error);
                 } 
@@ -28,9 +27,9 @@ function promisify(func) {
 
 const promisified = promisify(usesCallback);
 
-promisified(2)
-  .then((data) => {
-    console.log(data);
+promisified()
+  .then((...data) => {
+    console.log(...data);
   })
   .catch((error) => {
     console.error(error);
